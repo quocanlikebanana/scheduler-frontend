@@ -1,0 +1,21 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	min-width: 100%;
+	min-height: 100%;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+	margin: 0;
+	height: 100vh;
+	padding: 0;
+	min-width: 100%;
+	min-height: 100%;
+}
+
+@import "tailwindcss";
