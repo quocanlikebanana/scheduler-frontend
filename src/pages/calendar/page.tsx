@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, MoreVertical, Plus, Grid3X3 } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
-import BodyComp from './components/Body/comp';
+import CalendarView from './components/CalendarView/comp';
 
 const CalendarPage = () => {
 	const [currentTime, setCurrentTime] = useState(new Date());
@@ -21,12 +21,8 @@ const CalendarPage = () => {
 			<Sidebar />
 
 			<div className="flex-1 flex flex-col h-screen bg-gray-100">
-				{/* Header - Fixed */}
 				<Header />
-
-				{/* Calendar Body */}
-				<BodyComp />
-
+				<CalendarView />
 			</div>
 		</div>
 	);
