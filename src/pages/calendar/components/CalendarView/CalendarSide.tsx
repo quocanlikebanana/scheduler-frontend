@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 
 export default function CalendarSide() {
 	return (
-		<div className="w-48 bg-white border-r flex flex-col">
+		<div className="w-full bg-white border-r flex flex-col">
 			<div className="p-3 text-gray-700 font-medium">Your calendars</div>
 			<div className="p-2 flex items-center hover:bg-gray-100 rounded mx-1">
 				<div className="w-6 h-6 flex items-center justify-center bg-purple-100 rounded-sm text-purple-700 mr-2">

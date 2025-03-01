@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getStartOfWeek, HOURS_12, isSameDate, isWorkDay, isWorkHour, WEEK_DAYS } from "../../../../../utils/date";
+import { getStartOfWeek, HOURS_12, isSameDate, isWorkDay, isWorkHour, WEEK_DAYS } from "../../../../utils/date";
 
 const SLOT_HEIGHT = 64;
 

@@ -1,10 +1,17 @@
-import CalendarSide from './components/CalendarSide';
-import WeeklySchedule from './components/WeeklySchedule';
+import { SlideLayout } from '../Sidebar/SlideLayout';
+import CalendarSide from './CalendarSide';
+import WeeklySchedule from './WeeklySchedule';
 
-export default function CalendarView() {
+type CalendarViewProps = {
+	sideCollapsed: boolean;
+};
+
+export default function CalendarView(props: CalendarViewProps) {
 	return (
 		<div className="flex flex-1 overflow-hidden">
-			<CalendarSide />
+			<SlideLayout isCollapsed={props.sideCollapsed} expandedWidth="w-48" collapsedWidth="w-0">
+				<CalendarSide />
+			</SlideLayout>
 			<WeeklySchedule />
 		</div>
 	);

@@ -1,12 +1,18 @@
-import { ChevronLeft, ChevronRight, Grid3X3, Plus, MoreVertical } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Grid3X3, Plus } from 'lucide-react'
+import { DropdownMore } from './DropdownMore';
 
-export default function Header() {
+type HeaderProps = {
+	onYourCalendarClick: () => void;
+}
+
+export default function Header(props: HeaderProps) {
+
 	return (
 		<div className="flex justify-between items-center px-4 py-2 bg-white border-b">
 			<div className="flex items-center">
-				<div className="mr-4 text-gray-700">
+				<button className="mr-4 text-gray-700 cursor-pointer" onClick={props.onYourCalendarClick}>
 					<span className="font-medium">Your calendar</span>
-				</div>
+				</button>
 			</div>
 			<div className="flex items-center">
 				<span className="mr-4 font-medium">February 2025</span>
@@ -25,9 +31,10 @@ export default function Header() {
 				<button className="p-1 rounded-full hover:bg-gray-200 mr-1">
 					<Plus size={20} className="text-gray-600" />
 				</button>
-				<button className="p-1 rounded-full hover:bg-gray-200">
-					<MoreVertical size={20} className="text-gray-600" />
-				</button>
+
+				<DropdownMore />
+
+
 				<button className="ml-4 px-6 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium rounded-full">
 					Share
 				</button>
