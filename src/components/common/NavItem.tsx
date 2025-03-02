@@ -12,7 +12,7 @@ export const NavItem = ({
 	icon,
 	label,
 	isSelected = false,
-	isCollapsed,
+	isCollapsed = false,
 	onClick,
 }: NavItemProps) => {
 	const baseClasses = `${isCollapsed ? 'justify-center' : 'px-4'}`;

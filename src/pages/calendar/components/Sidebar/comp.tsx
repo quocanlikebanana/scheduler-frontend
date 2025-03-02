@@ -3,8 +3,8 @@ import {
 	ArrowUp, HelpCircle, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { useState } from 'react';
-import { Navigation, NavigationItem } from './Navigation';
-import { SlideLayout } from './SlideLayout';
+import { Navigation, NavigationItem } from '../../../../components/common/Navigation';
+import { SlideLayout } from '../../../../components/layouts/SlideLayout';
 
 // Define navigation items array for better maintainability
 const navItems: NavigationItem[] = [

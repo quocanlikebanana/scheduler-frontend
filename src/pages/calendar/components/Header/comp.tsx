@@ -1,16 +1,21 @@
-import { ChevronLeft, ChevronRight, Grid3X3, Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Grid3X3, PanelLeft, PanelLeftClose, Plus } from 'lucide-react'
 import { DropdownMore } from './DropdownMore';
 
 type HeaderProps = {
 	onYourCalendarClick: () => void;
+	yourCalendarOpen: boolean;
 }
 
 export default function Header(props: HeaderProps) {
-
 	return (
 		<div className="flex justify-between items-center px-4 py-2 bg-white border-b">
 			<div className="flex items-center">
-				<button className="mr-4 text-gray-700 cursor-pointer" onClick={props.onYourCalendarClick}>
+				<button className="flex items-center gap-2 mr-4 text-gray-700 cursor-pointer" onClick={props.onYourCalendarClick}>
+					{props.yourCalendarOpen ? (
+						<PanelLeftClose size={16} className='pt-1' />
+					) : (
+						<PanelLeft size={16} className='pt-1' />
+					)}
 					<span className="font-medium">Your calendar</span>
 				</button>
 			</div>
