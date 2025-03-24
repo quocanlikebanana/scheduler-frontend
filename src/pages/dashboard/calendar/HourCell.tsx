@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { HOURS_12 } from "../../../../../utils/date";
+import { HOURS_12 } from "../../../utils/date";
 
 export interface TimeCellProps {
 	hourValue: number;

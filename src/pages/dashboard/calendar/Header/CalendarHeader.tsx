@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Grid3X3, PanelLeft, PanelLeftClose, Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, PanelLeft, PanelLeftClose, Plus } from 'lucide-react'
 import { MenuMore } from './MenuMore';
 import MenuSchedule from './MenuSchedule';
 

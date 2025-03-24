@@ -1,16 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
-import { SlideLayout } from '../../../../components/layouts/SlideLayout';
+import { SlideLayout } from '../../../components/panels/SlidePanel';
 import CalendarSide from './CalendarSide';
-import WeeklySchedule from './WeekScheduleGrid/comp';
+import WeeklySchedule from './WeekScheduleGrid';
 import { AppointmentPopover, AppointmentData } from './AppointmentPopover';
-import { BoundaryConstraint } from '../../../../components/common/Popover';
+import { BoundaryConstraint } from '../../../components/common/Popover';
 
 type CalendarViewProps = {
 	sideCollapsed: boolean;
 	onAppointmentCreate?: (appointment: AppointmentData) => void;
 };
 
-export default function CalendarView({ sideCollapsed, onAppointmentCreate }: CalendarViewProps) {
+export default function CalendarBody({ sideCollapsed, onAppointmentCreate }: CalendarViewProps) {
 	const [isAppointmentOpen, setIsAppointmentOpen] = useState(false);
 	const [isToCloseAppointmentCellClick, setIsToCloseAppointmentCellClick] = useState(false);
 	const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null);
