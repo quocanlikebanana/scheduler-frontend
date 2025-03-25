@@ -1,5 +1,8 @@
 // Date related utilities
 
+/**
+ * 0 is Monday, 6 is Sunday. Contains information about days of the week.
+ */
 export const WEEK_DAYS: {
 	short: string;
 	long: string;
@@ -49,11 +52,18 @@ export const HOURS_24 = Array.from({ length: 24 }, (_, i) => i).map((h) => {
 export const WORK_WEEK_DAYS = [0, 1, 2, 3, 4];
 export const WORK_HOURS = [9, 10, 11, 12, 13, 14, 15, 16];
 
-export function getStartOfWeek(date: Date) {
+export function getStartOfWeek(date: Date = new Date()) {
 	const d = new Date(date);
 	const day = d.getDay();
 	const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
 	return new Date(d.setDate(diff));
+}
+
+export function getEndOfWeek(date: Date = new Date()) {
+	const d = new Date(date);
+	const day = d.getDay();
+	const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+	return new Date(d.setDate(diff + 6));
 }
 
 export function isSameDate(a: Date, b: Date) {

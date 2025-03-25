@@ -1,24 +1,18 @@
 import React, { useState } from "react";
-import { HOURS_12 } from "../../../utils/date";
+import { HOURS_12 } from "../../../../utils/date";
 
 export interface TimeCellProps {
 	hourValue: number;
 	dayIndex: number;
-	isWorkHour: boolean;
-	isWorkDay: boolean;
 	height: number;
 	onClick?: (quarterHour: number, event: React.MouseEvent) => void;
-	className?: string;
 }
 
 const HourCell: React.FC<TimeCellProps> = ({
 	hourValue,
 	dayIndex,
-	isWorkHour,
-	isWorkDay,
 	height,
 	onClick,
-	className = "",
 }) => {
 	const [hoveredQuarter, setHoveredQuarter] = useState<number | null>(null);
 
@@ -31,13 +25,8 @@ const HourCell: React.FC<TimeCellProps> = ({
 			quarter === 1 ? ':15' :
 				quarter === 2 ? ':30' :
 					':45';
-
-		// Extract AM/PM from the hour label
 		const ampm = hourLabel.includes('AM') ? 'AM' : 'PM';
-
-		// Extract just the hour number from the label
 		const hourNumber = hourLabel.split(' ')[0];
-
 		return `${hourNumber}${minutePart} ${ampm}`;
 	}
 
@@ -45,10 +34,9 @@ const HourCell: React.FC<TimeCellProps> = ({
 		<div
 			data-hour={hourValue}
 			data-day={dayIndex}
-			className={`flex flex-col border-b border-gray-300 ${isWorkHour && isWorkDay ? "bg-white" : "bg-gray-200"
-				} ${className}`}
+			className={`flex flex-col border-b border-gray-300`}
 			style={{
-				height
+				height,
 			}}
 		>
 			{/* Split into 4 vertical parts */}
@@ -57,8 +45,7 @@ const HourCell: React.FC<TimeCellProps> = ({
 					<div
 						key={quarter}
 						data-quarter={quarter}
-						className={`flex-1 h-[25%] ${quarter < 3 ? "border-b border-gray-100" : ""}
-            ${hoveredQuarter === quarter ? "bg-gray-50" : ""}`}
+						className={`flex-1 h-[25%] ${quarter < 3 ? "border-b border-gray-100" : ""} ${hoveredQuarter === quarter ? "bg-gray-50" : ""}`}
 						onClick={(e) => onClick?.(quarter, e)}
 						onMouseEnter={() => setHoveredQuarter(quarter)}
 						onMouseLeave={() => setHoveredQuarter(null)}
@@ -71,7 +58,7 @@ const HourCell: React.FC<TimeCellProps> = ({
 					</div>
 				))
 			}
-		</div >
+		</div>
 	);
 };
 

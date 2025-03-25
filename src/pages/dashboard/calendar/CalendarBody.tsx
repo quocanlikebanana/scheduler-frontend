@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { SlideLayout } from '../../../components/panels/SlidePanel';
-import CalendarSide from './CalendarSide';
-import WeeklySchedule from './WeekScheduleGrid';
+import CalendarSide from './Side/CalendarSide';
+import WeeklySchedule from './WeekView/WeekScheduleGrid';
 import { AppointmentPopover, AppointmentData } from './AppointmentPopover';
 import { BoundaryConstraint } from '../../../components/common/Popover';
 
