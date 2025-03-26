@@ -13,6 +13,18 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    getStoresByStoreIdBooked: build.query<
+      GetStoresByStoreIdBookedApiResponse,
+      GetStoresByStoreIdBookedApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/stores/${queryArg.storeId}/booked`,
+        params: {
+          start: queryArg.start,
+          end: queryArg.end,
+        },
+      }),
+    }),
     getStoresByStoreIdTimezone: build.query<
       GetStoresByStoreIdTimezoneApiResponse,
       GetStoresByStoreIdTimezoneApiArg
@@ -66,6 +78,16 @@ export { injectedRtkApi as bookingGenApi };
 export type GetStoresByStoreIdAvailabilityApiResponse =
   /** status 200 OK */ WorkHoursOfDays;
 export type GetStoresByStoreIdAvailabilityApiArg = {
+  /** Id of the store */
+  storeId: Id;
+  /** Start of the time range in date time */
+  start: string;
+  /** End of the time range in date time */
+  end: string;
+};
+export type GetStoresByStoreIdBookedApiResponse =
+  /** status 200 OK */ Service[];
+export type GetStoresByStoreIdBookedApiArg = {
   /** Id of the store */
   storeId: Id;
   /** Start of the time range in date time */
@@ -146,15 +168,6 @@ export type WorkHoursOfDays = {
   workHours: TimeRange[];
 }[];
 export type Id = string;
-export type TeamMemberSmall = {
-  id: Id;
-  /** Name of the team member */
-  name: string;
-  /** Avatar of the team member */
-  avatar?: string;
-  /** Role of the team member */
-  role: "admin" | "manager" | "employee";
-};
 export type Service = {
   /** Id of the service */
   id: string;
@@ -165,6 +178,15 @@ export type Service = {
   /** End time of the service */
   end: string;
 };
+export type TeamMemberSmall = {
+  id: Id;
+  /** Name of the team member */
+  name: string;
+  /** Avatar of the team member */
+  avatar?: string;
+  /** Role of the team member */
+  role: "admin" | "manager" | "employee";
+};
 export type AnonymousCustomer = {
   name: string;
   phone: string;
@@ -174,6 +196,7 @@ export type AnonymousCustomer = {
 };
 export const {
   useGetStoresByStoreIdAvailabilityQuery,
+  useGetStoresByStoreIdBookedQuery,
   useGetStoresByStoreIdTimezoneQuery,
   useGetStoresByStoreIdTeamsQuery,
   useGetStoresByStoreIdTeamsAndTeamIdAvailabilityQuery,

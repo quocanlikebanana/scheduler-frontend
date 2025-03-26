@@ -1,23 +1,20 @@
 import { Route, Routes } from 'react-router'
 import DashboardLayout from '../pages/dashboard/layout'
-import { paths } from './paths'
-import HomePage from '../pages/home/page'
 import CalendarPage from '../pages/dashboard/calendar/page'
+import ErrorPage from '../components/error/ErrorPage'
 
 export default function Router() {
+	// TODO: change back to normal route
+
 	return (
-		<Routes>
-			{/* For quick nav */}
-			<Route element={<DashboardLayout />}>
-				<Route index element={<CalendarPage />} />
+		<Routes >
+			<Route errorElement={<ErrorPage />}>
+				<Route element={<DashboardLayout />} >
+					<Route index element={<CalendarPage />} />
+				</Route>
+
+				<Route path="*" element={<ErrorPage title="Page Not Found" />} />
 			</Route>
-
-
-
-			<Route element={<DashboardLayout />}>
-				<Route path={paths._dashboard.calendar} element={<CalendarPage />} />
-			</Route>
-			<Route path={paths.home} element={<HomePage />} />
 		</Routes>
 	)
 }

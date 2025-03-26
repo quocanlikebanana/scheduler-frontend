@@ -1,13 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
-import { getEndOfWeek, getStartOfWeek, HOURS_12, isSameDate, WEEK_DAYS } from "../../../../../utils/date";
+import { useEffect, useState } from "react";
+import { getStartOfWeek, HOURS_12, isSameDate, WEEK_DAYS } from "../../../../../utils/date";
 import HourCell from "./HourCell";
-import { Time, TimeRange, useGetStoresByStoreIdAvailabilityQuery, WorkHoursOfDays } from "../../../../../features/booking/apis/booking.api-gen";
+import { Time, TimeRange, WorkHoursOfDays } from "../../../../../features/booking/apis/booking.api-gen";
+import { useCalendarContext } from "../../context";
 
 const SLOT_HEIGHT = 64;
-
-type WeeklyScheduleProps = {
-	onCellClick?: (date: Date, anchorElement: HTMLElement) => void;
-};
 
 type WeekSchedule = {
 	dayIndex: number;
@@ -46,19 +43,17 @@ const getCordinatesRange = (timeRange: TimeRange) => {
 	};
 }
 
-export default function WeeklySchedule({ onCellClick }: WeeklyScheduleProps) {
-	const [startOfWeek, endOfWeek] = useMemo(() => {
-		const start = getStartOfWeek();
-		const end = getEndOfWeek();
-		return [start, end];
-	}, []);
+type Props = {
+	workHoursOfDays: WorkHoursOfDays;
+	onCellClick?: (date: Date, anchorElement: HTMLElement) => void;
+};
 
+export default function WeeklySchedule({
+	workHoursOfDays,
+	onCellClick
+}: Props) {
+	const { startOfWeek } = useCalendarContext();
 	const [now, setNow] = useState(new Date());
-	const { data, isLoading, error } = useGetStoresByStoreIdAvailabilityQuery({
-		storeId: "1",
-		start: startOfWeek.toISOString(),
-		end: endOfWeek.toISOString(),
-	});
 
 	// Update time every minute
 	useEffect(() => {
@@ -68,11 +63,7 @@ export default function WeeklySchedule({ onCellClick }: WeeklyScheduleProps) {
 		return () => clearTimeout(timeOut);
 	}, [now]);
 
-	if (isLoading) return "Loading...";
-	if (error) return "Error";
-	if (data == null) return "No data";
-
-	const weekSchedule = getWeekSchedule(data);
+	const weekSchedule = getWeekSchedule(workHoursOfDays);
 
 	const timeIndicator = {
 		top: now.getHours() * SLOT_HEIGHT + now.getMinutes() / 60 * SLOT_HEIGHT,

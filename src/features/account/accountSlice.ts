@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AccountState {
 	id: string | null;
+	storeId: string | null;
 	name: string;
 	email: string;
 	isAuthenticated: boolean;
@@ -12,11 +13,20 @@ const initialState: AccountState = {
 	name: 'John Doe',
 	email: 'johndoe@gmail.com',
 	isAuthenticated: false,
+	storeId: "1"
 };
 
 const accountSlice = createSlice({
 	name: 'account',
 	initialState,
+	selectors: {
+		getStoreIdStrict: (state) => {
+			if (!state.storeId) {
+				throw new Error('Store ID is not set');
+			}
+			return state.storeId
+		},
+	},
 	reducers: {
 		login(state, action: PayloadAction<{ id: string; name: string; email: string }>) {
 			state.id = action.payload.id;
@@ -42,5 +52,6 @@ const accountSlice = createSlice({
 });
 
 export const { login, logout, updateAccount } = accountSlice.actions;
+export const selectors = accountSlice.selectors;
 
 export default accountSlice.reducer;

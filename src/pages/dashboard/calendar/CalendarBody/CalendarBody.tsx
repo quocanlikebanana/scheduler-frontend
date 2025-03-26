@@ -2,6 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import WeeklySchedule from './WeekView/WeekView';
 import { AppointmentPopover, AppointmentData } from './AppointmentPopover';
 import { BoundaryConstraint } from '../../../../components/common/Popover';
+import { useGetStoresByStoreIdAvailabilityQuery } from '../../../../features/booking/apis/booking.api-gen';
+import { useCalendarContext } from '../context';
+import { FullPageError } from '../../../../components/error/FullPageError';
+import { useGlobalSpinner } from '../../../../global/GlobalSpinner';
 
 type CalendarViewProps = {
 	onAppointmentCreate?: (appointment: AppointmentData) => void;
@@ -16,17 +20,15 @@ export default function CalendarBody({
 	const [initialDate, setInitialDate] = useState(new Date());
 	const [boundaryConstraint, setBoundaryConstraint] = useState<BoundaryConstraint>(null);
 
+	const { storeId, startOfWeek, endOfWeek } = useCalendarContext();
 	const calendarContainerRef = useRef<HTMLDivElement>(null);
+	const { showSpinner, hideSpinner } = useGlobalSpinner();
 
-	const handleCellClick = (date: Date, element: HTMLElement) => {
-		setInitialDate(date);
-		setAnchorElement(element);
-		if (isToCloseAppointmentCellClick) {
-			setIsToCloseAppointmentCellClick(false);
-		} else {
-			setIsAppointmentOpen(true);
-		}
-	};
+	const { data, isLoading, error } = useGetStoresByStoreIdAvailabilityQuery({
+		storeId,
+		start: startOfWeek.toISOString(),
+		end: endOfWeek.toISOString(),
+	});
 
 	// Update boundary constraint when the container resizes or opens/closes
 	useEffect(() => {
@@ -62,14 +64,6 @@ export default function CalendarBody({
 		}
 	}, []);
 
-	// Handle saving the appointment
-	const handleSaveAppointment = (appointmentData: AppointmentData) => {
-		if (onAppointmentCreate) {
-			onAppointmentCreate(appointmentData);
-		}
-		setIsAppointmentOpen(false);
-	};
-
 	// Set the next cell click is to close the appointment popover
 	useEffect(() => {
 		if (isAppointmentOpen) {
@@ -77,9 +71,40 @@ export default function CalendarBody({
 		}
 	}, [isAppointmentOpen]);
 
+
+	useEffect(() => {
+		if (isLoading) {
+			showSpinner('Loading calendar data...');
+		} else {
+			hideSpinner();
+		}
+
+		return () => hideSpinner();
+	}, [isLoading, showSpinner, hideSpinner]);
+
+	if (error) return <FullPageError error={error} />;
+	if (!data) return null;
+
+	const handleCellClick = (date: Date, element: HTMLElement) => {
+		setInitialDate(date);
+		setAnchorElement(element);
+		if (isToCloseAppointmentCellClick) {
+			setIsToCloseAppointmentCellClick(false);
+		} else {
+			setIsAppointmentOpen(true);
+		}
+	};
+
+	const handleSaveAppointment = (appointmentData: AppointmentData) => {
+		if (onAppointmentCreate) {
+			onAppointmentCreate(appointmentData);
+		}
+		setIsAppointmentOpen(false);
+	};
+
 	return (
 		<div className="flex flex-1 overflow-y-scroll relative" ref={calendarContainerRef}>
-			<WeeklySchedule onCellClick={handleCellClick} />
+			<WeeklySchedule workHoursOfDays={data} onCellClick={handleCellClick} />
 
 			<AppointmentPopover
 				isOpen={isAppointmentOpen}

@@ -1,12 +1,15 @@
 import { BrowserRouter } from "react-router";
 import Router from "./routers/Router";
+import { GlobalSpinnerProvider } from "./global/GlobalSpinner";
 
 function App() {
 	return (
 		<>
-			<BrowserRouter>
-				<Router />
-			</BrowserRouter>
+			<GlobalSpinnerProvider>
+				<BrowserRouter>
+					<Router />
+				</BrowserRouter>
+			</GlobalSpinnerProvider>
 		</>
 	)
 }
