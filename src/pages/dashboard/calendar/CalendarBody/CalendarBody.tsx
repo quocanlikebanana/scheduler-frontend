@@ -1,26 +1,23 @@
 import { useState, useRef, useEffect } from 'react';
-import { SlideLayout } from '../../../components/panels/SlidePanel';
-import CalendarSide from './Side/CalendarSide';
-import WeeklySchedule from './WeekView/WeekScheduleGrid';
+import WeeklySchedule from './WeekView/WeekView';
 import { AppointmentPopover, AppointmentData } from './AppointmentPopover';
-import { BoundaryConstraint } from '../../../components/common/Popover';
+import { BoundaryConstraint } from '../../../../components/common/Popover';
 
 type CalendarViewProps = {
-	sideCollapsed: boolean;
 	onAppointmentCreate?: (appointment: AppointmentData) => void;
 };
 
-export default function CalendarBody({ sideCollapsed, onAppointmentCreate }: CalendarViewProps) {
+export default function CalendarBody({
+	onAppointmentCreate
+}: CalendarViewProps) {
 	const [isAppointmentOpen, setIsAppointmentOpen] = useState(false);
 	const [isToCloseAppointmentCellClick, setIsToCloseAppointmentCellClick] = useState(false);
 	const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null);
 	const [initialDate, setInitialDate] = useState(new Date());
 	const [boundaryConstraint, setBoundaryConstraint] = useState<BoundaryConstraint>(null);
 
-	// Ref to the calendar container
 	const calendarContainerRef = useRef<HTMLDivElement>(null);
 
-	// Handle cell click from the weekly schedule grid
 	const handleCellClick = (date: Date, element: HTMLElement) => {
 		setInitialDate(date);
 		setAnchorElement(element);
@@ -33,6 +30,7 @@ export default function CalendarBody({ sideCollapsed, onAppointmentCreate }: Cal
 
 	// Update boundary constraint when the container resizes or opens/closes
 	useEffect(() => {
+		console.log('calendarContainerRef.current: ', calendarContainerRef.current);
 		if (calendarContainerRef.current) {
 			const updateBoundary = () => {
 				const rect = calendarContainerRef.current?.getBoundingClientRect();
@@ -49,13 +47,20 @@ export default function CalendarBody({ sideCollapsed, onAppointmentCreate }: Cal
 			// Initial calculation
 			updateBoundary();
 
+			const resizeObserver = new ResizeObserver(updateBoundary);
+			resizeObserver.observe(calendarContainerRef.current);
+
 			// Update on window resize
 			window.addEventListener('resize', updateBoundary);
 			return () => {
+				if (calendarContainerRef.current) {
+					resizeObserver.unobserve(calendarContainerRef.current);
+				}
 				window.removeEventListener('resize', updateBoundary);
+				resizeObserver.disconnect();
 			};
 		}
-	}, [sideCollapsed]); // Re-calculate when side panel collapses/expands
+	}, []);
 
 	// Handle saving the appointment
 	const handleSaveAppointment = (appointmentData: AppointmentData) => {
@@ -73,11 +78,7 @@ export default function CalendarBody({ sideCollapsed, onAppointmentCreate }: Cal
 	}, [isAppointmentOpen]);
 
 	return (
-		<div className="flex flex-1 overflow-hidden relative" ref={calendarContainerRef}>
-			<SlideLayout isCollapsed={sideCollapsed} expandedWidth="w-48" collapsedWidth="w-0">
-				<CalendarSide />
-			</SlideLayout>
-
+		<div className="flex flex-1 overflow-y-scroll relative" ref={calendarContainerRef}>
 			<WeeklySchedule onCellClick={handleCellClick} />
 
 			<AppointmentPopover

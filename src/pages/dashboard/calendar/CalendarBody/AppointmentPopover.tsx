@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, Clock, FileText, Video } from 'lucide-react';
-import { Position, AnchorRect, Popover, BoundaryConstraint } from '../../../components/common/Popover';
+import { Position, AnchorRect, Popover, BoundaryConstraint } from '../../../../components/common/Popover';
 
 interface AppointmentPopoverProps {
 	isOpen: boolean;

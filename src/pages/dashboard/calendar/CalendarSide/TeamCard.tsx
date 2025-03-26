@@ -1,17 +1,18 @@
 interface Props {
-	id: string;
 	name: string;
 	avatar?: string;
 	role: string;
+	onTeamClick: () => void;
 }
 
 export default function TeamCard({
 	name,
 	avatar = "https://i.pravatar.cc/300",
-	role
+	role,
+	onTeamClick,
 }: Props) {
 	return (
-		<div className="p-2 flex items-center hover:bg-gray-100 rounded mx-1 cursor-pointer">
+		<div className="p-2 flex items-center hover:bg-gray-100 rounded mx-1 cursor-pointer" onClick={onTeamClick}>
 			<img
 				src={avatar}
 				alt={name}

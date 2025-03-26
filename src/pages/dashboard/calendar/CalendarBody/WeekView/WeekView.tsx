@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { getEndOfWeek, getStartOfWeek, HOURS_12, isSameDate, WEEK_DAYS } from "../../../../utils/date";
+import { getEndOfWeek, getStartOfWeek, HOURS_12, isSameDate, WEEK_DAYS } from "../../../../../utils/date";
 import HourCell from "./HourCell";
-import { Time, TimeRange, useGetStoresByStoreIdAvailabilityQuery, WorkHoursOfDays } from "../../../../features/booking/apis/booking.api-gen";
+import { Time, TimeRange, useGetStoresByStoreIdAvailabilityQuery, WorkHoursOfDays } from "../../../../../features/booking/apis/booking.api-gen";
 
 const SLOT_HEIGHT = 64;
 

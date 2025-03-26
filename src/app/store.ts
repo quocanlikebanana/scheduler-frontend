@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { bookingApi } from '../features/booking/apis/booking.api';
+import accountReducer from '../features/account/accountSlice';
 
 const store = configureStore({
 	reducer: {
+		account: accountReducer,
 		[bookingApi.reducerPath]: bookingApi.reducer,
 	},
 

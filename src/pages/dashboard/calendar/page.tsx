@@ -1,6 +1,8 @@
 import { useState } from "react";
-import Header from "./Header/CalendarHeader";
-import CalendarBody from "./CalendarBody";
+import Header from "./CalendarHeader/CalendarHeader";
+import CalendarBody from "./CalendarBody/CalendarBody";
+import { SlideLayout } from "../../../components/panels/SlidePanel";
+import CalendarSide from "./CalendarSide/CalendarSide";
 
 export default function CalendarPage() {
 	const [isYourCalendarOpen, setIsYourCalendarOpen] = useState(false);
@@ -11,7 +13,14 @@ export default function CalendarPage() {
 				yourCalendarOpen={isYourCalendarOpen}
 				onYourCalendarClick={() => setIsYourCalendarOpen(!isYourCalendarOpen)}
 			/>
-			<CalendarBody sideCollapsed={isYourCalendarOpen} />
+
+			<div className="flex overflow-hidden">
+				<SlideLayout isCollapsed={isYourCalendarOpen} expandedWidth="w-48" collapsedWidth="w-0">
+					<CalendarSide />
+				</SlideLayout>
+
+				<CalendarBody />
+			</div>
 		</div>
 	);
 }
