@@ -2,10 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import WeeklySchedule from './WeekView/WeekView';
 import { AppointmentPopover, AppointmentData } from './AppointmentPopover';
 import { BoundaryConstraint } from '../../../../components/common/Popover';
-import { useGetStoresByStoreIdAvailabilityQuery } from '../../../../features/booking/apis/booking.api-gen';
 import { useCalendarContext } from '../context';
 import { FullPageError } from '../../../../components/error/FullPageError';
 import { useGlobalSpinner } from '../../../../global/GlobalSpinner';
+import { useGetStoresByStoreIdAvailabilityOrWithTeamIdAvailabilityQuery } from '../../../../features/booking/apis/booking.api-custom';
 
 type CalendarViewProps = {
 	onAppointmentCreate?: (appointment: AppointmentData) => void;
@@ -20,12 +20,13 @@ export default function CalendarBody({
 	const [initialDate, setInitialDate] = useState(new Date());
 	const [boundaryConstraint, setBoundaryConstraint] = useState<BoundaryConstraint>(null);
 
-	const { storeId, startOfWeek, endOfWeek } = useCalendarContext();
+	const { storeId, startOfWeek, endOfWeek, currentTeamCalendarId } = useCalendarContext();
 	const calendarContainerRef = useRef<HTMLDivElement>(null);
 	const { showSpinner, hideSpinner } = useGlobalSpinner();
 
-	const { data, isLoading, error } = useGetStoresByStoreIdAvailabilityQuery({
+	const { data, isLoading, error } = useGetStoresByStoreIdAvailabilityOrWithTeamIdAvailabilityQuery({
 		storeId,
+		teamId: currentTeamCalendarId ?? undefined,
 		start: startOfWeek.toISOString(),
 		end: endOfWeek.toISOString(),
 	});
