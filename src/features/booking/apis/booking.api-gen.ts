@@ -31,6 +31,22 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({ url: `/stores/${queryArg.storeId}/timezone` }),
     }),
+    postStoresByStoreIdBook: build.mutation<
+      PostStoresByStoreIdBookApiResponse,
+      PostStoresByStoreIdBookApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/stores/${queryArg.storeId}/book`,
+        method: "POST",
+        body: queryArg.body,
+      }),
+    }),
+    getStoresByStoreIdServices: build.query<
+      GetStoresByStoreIdServicesApiResponse,
+      GetStoresByStoreIdServicesApiArg
+    >({
+      query: (queryArg) => ({ url: `/stores/${queryArg.storeId}/services` }),
+    }),
     getStoresByStoreIdTeams: build.query<
       GetStoresByStoreIdTeamsApiResponse,
       GetStoresByStoreIdTeamsApiArg
@@ -61,14 +77,12 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    postStoresByStoreIdBook: build.mutation<
-      PostStoresByStoreIdBookApiResponse,
-      PostStoresByStoreIdBookApiArg
+    getStoresByStoreIdTeamsAndTeamIdServices: build.query<
+      GetStoresByStoreIdTeamsAndTeamIdServicesApiResponse,
+      GetStoresByStoreIdTeamsAndTeamIdServicesApiArg
     >({
       query: (queryArg) => ({
-        url: `/stores/${queryArg.storeId}/book`,
-        method: "POST",
-        body: queryArg.body,
+        url: `/stores/${queryArg.storeId}/teams/${queryArg.teamId}/services`,
       }),
     }),
   }),
@@ -85,8 +99,7 @@ export type GetStoresByStoreIdAvailabilityApiArg = {
   /** End of the time range in date time */
   end: string;
 };
-export type GetStoresByStoreIdBookedApiResponse =
-  /** status 200 OK */ Service[];
+export type GetStoresByStoreIdBookedApiResponse = /** status 200 OK */ Book[];
 export type GetStoresByStoreIdBookedApiArg = {
   /** Id of the store */
   storeId: Id;
@@ -100,6 +113,28 @@ export type GetStoresByStoreIdTimezoneApiResponse = /** status 200 OK */ {
   timezone?: string;
 };
 export type GetStoresByStoreIdTimezoneApiArg = {
+  /** Id of the store */
+  storeId: Id;
+};
+export type PostStoresByStoreIdBookApiResponse = unknown;
+export type PostStoresByStoreIdBookApiArg = {
+  /** Id of the store */
+  storeId: Id;
+  body: {
+    teamId: Id;
+    serviceId: Id;
+    /** Start time of the service */
+    start: string;
+    /** End time of the service */
+    end: string;
+    /** Comment for the service */
+    comment?: string;
+    customer?: Id | AnonymousCustomer;
+  };
+};
+export type GetStoresByStoreIdServicesApiResponse =
+  /** status 200 OK */ Service[];
+export type GetStoresByStoreIdServicesApiArg = {
   /** Id of the store */
   storeId: Id;
 };
@@ -122,7 +157,7 @@ export type GetStoresByStoreIdTeamsAndTeamIdAvailabilityApiArg = {
   end: string;
 };
 export type GetStoresByStoreIdTeamsAndTeamIdBookedApiResponse =
-  /** status 200 OK */ Service[];
+  /** status 200 OK */ Book[];
 export type GetStoresByStoreIdTeamsAndTeamIdBookedApiArg = {
   /** Id of the store */
   storeId: Id;
@@ -133,21 +168,13 @@ export type GetStoresByStoreIdTeamsAndTeamIdBookedApiArg = {
   /** End of the time range in date time */
   end: string;
 };
-export type PostStoresByStoreIdBookApiResponse = unknown;
-export type PostStoresByStoreIdBookApiArg = {
+export type GetStoresByStoreIdTeamsAndTeamIdServicesApiResponse =
+  /** status 200 OK */ Service[];
+export type GetStoresByStoreIdTeamsAndTeamIdServicesApiArg = {
   /** Id of the store */
   storeId: Id;
-  body: {
-    teamId: Id;
-    serviceId: Id;
-    /** Start time of the service */
-    start: string;
-    /** End time of the service */
-    end: string;
-    /** Comment for the service */
-    comment?: string;
-    customer?: Id | AnonymousCustomer;
-  };
+  /** Id of a team member */
+  teamId: Id;
 };
 export type Time = {
   /** Hour of the time (0-23) */
@@ -168,16 +195,6 @@ export type WorkHoursOfDays = {
   workHours: TimeRange[];
 }[];
 export type Id = string;
-export type Service = {
-  /** Id of the service */
-  id: string;
-  /** Name of the service */
-  name: string;
-  /** Start time of the service */
-  start: string;
-  /** End time of the service */
-  end: string;
-};
 export type TeamMemberSmall = {
   id: Id;
   /** Name of the team member */
@@ -187,6 +204,15 @@ export type TeamMemberSmall = {
   /** Role of the team member */
   role: "admin" | "manager" | "employee";
 };
+export type Service = {
+  id: Id;
+  /** Name of the service */
+  name: string;
+  /** Duration of the service in minutes. */
+  duration: number;
+  /** Team members who can provide the service */
+  members: TeamMemberSmall[];
+};
 export type AnonymousCustomer = {
   name: string;
   phone: string;
@@ -194,12 +220,31 @@ export type AnonymousCustomer = {
   address?: string;
   avatar?: string;
 };
+export type Customer = AnonymousCustomer & {
+  id: Id;
+};
+export type BookingStatus = "new" | "ready" | "denined" | "done";
+export type Book = {
+  /** Id of the service */
+  id: string;
+  service: Service;
+  customer: Customer | AnonymousCustomer;
+  /** Start time of the service */
+  start: string;
+  /** End time of the service */
+  end: string;
+  /** Comment for the service */
+  comment?: string;
+  status: BookingStatus;
+};
 export const {
   useGetStoresByStoreIdAvailabilityQuery,
   useGetStoresByStoreIdBookedQuery,
   useGetStoresByStoreIdTimezoneQuery,
+  usePostStoresByStoreIdBookMutation,
+  useGetStoresByStoreIdServicesQuery,
   useGetStoresByStoreIdTeamsQuery,
   useGetStoresByStoreIdTeamsAndTeamIdAvailabilityQuery,
   useGetStoresByStoreIdTeamsAndTeamIdBookedQuery,
-  usePostStoresByStoreIdBookMutation,
+  useGetStoresByStoreIdTeamsAndTeamIdServicesQuery,
 } = injectedRtkApi;

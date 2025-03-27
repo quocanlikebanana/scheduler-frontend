@@ -28,7 +28,7 @@ type PopoverPlacement = 'top' | 'right' | 'bottom' | 'left' | 'auto';
 type PopoverProps = {
 	isOpen: boolean;
 	onClose: () => void;
-	position?: Position;
+	providedPosition?: Position;
 	anchorRect?: AnchorRect;
 	placement?: PopoverPlacement;
 	children: React.ReactNode;
@@ -42,7 +42,7 @@ type PopoverProps = {
 export const Popover: React.FC<PopoverProps> = ({
 	isOpen,
 	onClose,
-	position,
+	providedPosition: position,
 	anchorRect,
 	placement = 'auto',
 	children,

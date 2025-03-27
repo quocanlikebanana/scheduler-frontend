@@ -1,4 +1,4 @@
-import { useCalendarContext } from "../context";
+import { useCalendarContext } from "../calendar.context";
 
 interface Props {
 	id: string;

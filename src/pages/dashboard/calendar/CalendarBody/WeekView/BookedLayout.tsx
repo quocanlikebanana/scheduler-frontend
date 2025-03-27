@@ -1,8 +1,8 @@
 import { useCallback } from "react";
-import { Service } from "../../../../../features/booking/apis/booking.api-gen";
-import { useCalendarContext } from "../../context";
+import { Book } from "../../../../../features/booking/apis/booking.api-gen";
 import BookItem from "../Items/BookItem";
 import { AppColor } from "../../../../../utils/color";
+import { useCalendarContext } from "../../calendar.context";
 
 type GridCoordinate = {
 	top: number;
@@ -11,7 +11,7 @@ type GridCoordinate = {
 }
 
 type Props = {
-	services: Service[];
+	services: Book[];
 	slotHeight: number;
 }
 
@@ -21,7 +21,7 @@ export default function BookedLayout({
 }: Props) {
 	const { startOfWeek, endOfWeek } = useCalendarContext();
 
-	const serviceToCoordinates = useCallback((service: Service) => {
+	const serviceToCoordinates = useCallback((service: Book) => {
 		const startDate = new Date(service.start);
 		const endDate = new Date(service.end);
 		// Time zone: Z => GTM+7 => + 7 hours, so 9:00 => 16:00
@@ -42,7 +42,7 @@ export default function BookedLayout({
 									height: `${coord.height}px`,
 								}}>
 								<BookItem
-									name={service.name}
+									serviceName={service.service.name}
 									color={AppColor.randomColor()}
 								/>
 							</div>

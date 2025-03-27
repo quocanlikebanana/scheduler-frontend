@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { getStartOfWeek, HOURS_12, isSameDate, WEEK_DAYS } from "../../../../../utils/date";
-import { Service, TimeRange, WorkHoursOfDays } from "../../../../../features/booking/apis/booking.api-gen";
-import { useCalendarContext } from "../../context";
+import { Book, TimeRange, WorkHoursOfDays } from "../../../../../features/booking/apis/booking.api-gen";
 import CurrentTimeIndicatorLayout from "./CurrentTimeIndicatorLayout";
 import BookedLayout from "./BookedLayout";
 import WorkHoursLayout from "./WorkHoursLayout";
+import { useCalendarContext } from "../../calendar.context";
 
 const SLOT_HEIGHT = 64;
 
@@ -36,7 +36,7 @@ const getWeekSchedule = (workHours: WorkHoursOfDays) => {
 }
 
 type Props = {
-	services: Service[];
+	services: Book[];
 	workHoursOfDays: WorkHoursOfDays;
 	onCellClick?: (date: Date, anchorElement: HTMLElement) => void;
 };

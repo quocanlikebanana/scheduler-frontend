@@ -3,7 +3,7 @@ import Header from "./CalendarHeader/CalendarHeader";
 import CalendarBody from "./CalendarBody/CalendarBody";
 import { SlideLayout } from "../../../components/panels/SlidePanel";
 import CalendarSide from "./CalendarSide/CalendarSide";
-import { CalendarProvider } from "./context";
+import { CalendarProvider } from "./calendar.context";
 
 export default function CalendarPage() {
 	const [isYourCalendarOpen, setIsYourCalendarOpen] = useState(false);

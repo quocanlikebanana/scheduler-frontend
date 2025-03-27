@@ -1,4 +1,4 @@
-import { useCalendarContext } from "../../../pages/dashboard/calendar/context";
+import { useCalendarContext } from "../../../pages/dashboard/calendar/contexts/calendar.context";
 import { useCustomGetAvailabilityByStoreIdOrWithTeamIdQuery, useCustomGetBookedByStoreIdOrWithTeamIdQuery } from "../apis/booking.api-custom";
 
 export default function useScheduled() {

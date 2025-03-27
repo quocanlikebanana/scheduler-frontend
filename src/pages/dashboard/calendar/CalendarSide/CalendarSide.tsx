@@ -1,10 +1,13 @@
 import { Plus, StoreIcon } from "lucide-react";
 import TeamCard from "./TeamCard";
 import { useGetStoresByStoreIdTeamsQuery } from "../../../../features/booking/apis/booking.api-gen";
-import { useCalendarContext } from "../context";
+import { useCalendarContext } from "../calendar.context";
+import { useAppSelector } from "../../../../app/hooks";
+import { selectors } from "../../../../features/account/accountSlice";
 
 export default function CalendarSide() {
-	const { data } = useGetStoresByStoreIdTeamsQuery({ storeId: "1" });
+	const storeId = useAppSelector(selectors.getStoreIdStrict);
+	const { data } = useGetStoresByStoreIdTeamsQuery({ storeId });
 	const { currentTeamCalendarId, setCurrentTeamCalendarId } = useCalendarContext();
 
 	if (!data) return null;
