@@ -1,8 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 import { getEndOfWeek, getStartOfWeek } from '../../../utils/date';
 import { useAppSelector } from '../../../app/hooks';
 import { selectors } from '../../../features/account/accountSlice';
-import { useGetStoresByStoreIdAvailabilityQuery, WorkHoursOfDays } from '../../../features/booking/apis/booking.api-gen';
 
 interface CalendarContextProps {
 	startOfWeek: Date;

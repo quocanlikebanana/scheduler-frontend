@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import WeeklySchedule from './WeekView/WeekView';
+import WeekView from './WeekView/WeekView';
 import { AppointmentPopover, AppointmentData } from './AppointmentPopover';
 import { BoundaryConstraint } from '../../../../components/common/Popover';
-import { useCalendarContext } from '../context';
 import { FullPageError } from '../../../../components/error/FullPageError';
 import { useGlobalSpinner } from '../../../../global/GlobalSpinner';
-import { useGetStoresByStoreIdAvailabilityOrWithTeamIdAvailabilityQuery } from '../../../../features/booking/apis/booking.api-custom';
+import useScheduled from '../../../../features/booking/hooks/useScheduled';
 
 type CalendarViewProps = {
 	onAppointmentCreate?: (appointment: AppointmentData) => void;
@@ -19,21 +18,11 @@ export default function CalendarBody({
 	const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null);
 	const [initialDate, setInitialDate] = useState(new Date());
 	const [boundaryConstraint, setBoundaryConstraint] = useState<BoundaryConstraint>(null);
-
-	const { storeId, startOfWeek, endOfWeek, currentTeamCalendarId } = useCalendarContext();
 	const calendarContainerRef = useRef<HTMLDivElement>(null);
 	const { showSpinner, hideSpinner } = useGlobalSpinner();
 
-	const { data, isLoading, error } = useGetStoresByStoreIdAvailabilityOrWithTeamIdAvailabilityQuery({
-		storeId,
-		teamId: currentTeamCalendarId ?? undefined,
-		start: startOfWeek.toISOString(),
-		end: endOfWeek.toISOString(),
-	});
-
 	// Update boundary constraint when the container resizes or opens/closes
 	useEffect(() => {
-		console.log('calendarContainerRef.current: ', calendarContainerRef.current);
 		if (calendarContainerRef.current) {
 			const updateBoundary = () => {
 				const rect = calendarContainerRef.current?.getBoundingClientRect();
@@ -72,6 +61,8 @@ export default function CalendarBody({
 		}
 	}, [isAppointmentOpen]);
 
+	const { data, isLoading, error } = useScheduled();
+
 
 	useEffect(() => {
 		if (isLoading) {
@@ -79,11 +70,11 @@ export default function CalendarBody({
 		} else {
 			hideSpinner();
 		}
-
 		return () => hideSpinner();
 	}, [isLoading, showSpinner, hideSpinner]);
 
 	if (error) return <FullPageError error={error} />;
+
 	if (!data) return null;
 
 	const handleCellClick = (date: Date, element: HTMLElement) => {
@@ -105,7 +96,11 @@ export default function CalendarBody({
 
 	return (
 		<div className="flex flex-1 overflow-y-scroll relative" ref={calendarContainerRef}>
-			<WeeklySchedule workHoursOfDays={data} onCellClick={handleCellClick} />
+			<WeekView
+				services={data.booked}
+				workHoursOfDays={data.workHours}
+				onCellClick={handleCellClick}
+			/>
 
 			<AppointmentPopover
 				isOpen={isAppointmentOpen}

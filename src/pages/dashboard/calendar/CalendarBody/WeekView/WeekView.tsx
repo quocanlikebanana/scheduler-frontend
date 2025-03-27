@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getStartOfWeek, HOURS_12, isSameDate, WEEK_DAYS } from "../../../../../utils/date";
-import HourCell from "./HourCell";
-import { Time, TimeRange, WorkHoursOfDays } from "../../../../../features/booking/apis/booking.api-gen";
+import { Service, TimeRange, WorkHoursOfDays } from "../../../../../features/booking/apis/booking.api-gen";
 import { useCalendarContext } from "../../context";
+import CurrentTimeIndicatorLayout from "./CurrentTimeIndicatorLayout";
+import BookedLayout from "./BookedLayout";
+import WorkHoursLayout from "./WorkHoursLayout";
 
 const SLOT_HEIGHT = 64;
 
@@ -33,22 +35,14 @@ const getWeekSchedule = (workHours: WorkHoursOfDays) => {
 	return weekSchedule;
 }
 
-const getCordinatesRange = (timeRange: TimeRange) => {
-	const getCordinates = (time: Time) => {
-		return SLOT_HEIGHT * time.hour + (SLOT_HEIGHT / 60) * time.minute;
-	}
-	return {
-		start: getCordinates(timeRange.start),
-		end: getCordinates(timeRange.end),
-	};
-}
-
 type Props = {
+	services: Service[];
 	workHoursOfDays: WorkHoursOfDays;
 	onCellClick?: (date: Date, anchorElement: HTMLElement) => void;
 };
 
-export default function WeeklySchedule({
+export default function WeekView({
+	services,
 	workHoursOfDays,
 	onCellClick
 }: Props) {
@@ -63,7 +57,7 @@ export default function WeeklySchedule({
 		return () => clearTimeout(timeOut);
 	}, [now]);
 
-	const weekSchedule = getWeekSchedule(workHoursOfDays);
+	const weekSchedule = useMemo(() => getWeekSchedule(workHoursOfDays), [workHoursOfDays]);
 
 	const timeIndicator = {
 		top: now.getHours() * SLOT_HEIGHT + now.getMinutes() / 60 * SLOT_HEIGHT,
@@ -88,7 +82,7 @@ export default function WeeklySchedule({
 			{/* 5% - 95% layout */}
 
 			{/* Days Header */}
-			<div className="flex flex-col sticky top-0 bg-white z-10">
+			<div className="flex flex-col sticky top-0 bg-white z-20">
 				{/* Day display */}
 				<div className="self-end w-[95%] flex items-baseline">
 					{weekSchedule.map((day, index) => (
@@ -106,8 +100,7 @@ export default function WeeklySchedule({
 								<span>{day.dayName}</span>
 							</div>
 						</div>
-					))
-					}
+					))}
 				</div>
 
 				{/* Whole day selection */}
@@ -132,65 +125,21 @@ export default function WeeklySchedule({
 					))}
 				</div>
 
-				{/* Grid Columns */}
+				{/* Main Layout */}
 				<div className="w-[95%] relative h-fit">
-					<div className="grid grid-cols-7 h-fit">
-						{weekSchedule.map((ws) => {
 
-							return (
-								<div key={ws.dayIndex} className="relative border-r border-gray-300 bg-gray-200">
-									{ws.workHours.map((wh, index) => {
-										const { start, end } = getCordinatesRange(wh);
-										return (
-											<div
-												key={index}
-												className="absolute left-0 right-0 w-full bg-white z-0"
-												style={{
-													top: start,
-													height: end - start,
-												}}
-											></div>
-										);
-									})}
-									{HOURS_12.map((hour) => (
-										<div className="relative " key={hour.value}>
-											<HourCell
-												hourValue={hour.value}
-												dayIndex={ws.dayIndex}
-												height={SLOT_HEIGHT}
-												onClick={(quarter, event) => handleCellClick(quarter, hour.value, ws.dayIndex, event)}
-											/>
-										</div>
-									))}
-								</div>
-							);
-						})}
-					</div>
+					<WorkHoursLayout
+						weekSchedule={weekSchedule}
+						slotHeight={SLOT_HEIGHT}
+						onCellClick={handleCellClick}
+					/>
 
-					{/* Current Time Indicator */}
-					<div
-						className="absolute left-0 right-0 flex items-center"
-						style={{
-							top: timeIndicator.top - 1 // Minus to center the indicator
-						}}
-					>
-						<div className="flex-1 grid grid-cols-7 h-px bg-gray-500">
-							<div className="relative" style={{
-								gridColumn: timeIndicator.horizontalChunk,
-							}}>
-								<div className="absolute h-[3px] bg-black w-full" style={{
-									top: -1,
-								}}>
-									<div className="absolute" style={{
-										top: -2,
-										width: 2,
-										height: 7,
-										backgroundColor: 'black',
-									}}></div>
-								</div>
-							</div>
-						</div>
-					</div>
+					<CurrentTimeIndicatorLayout timeIndicator={timeIndicator} />
+
+					<BookedLayout
+						slotHeight={SLOT_HEIGHT}
+						services={services}
+					/>
 				</div>
 			</div>
 		</div>

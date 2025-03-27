@@ -56,14 +56,18 @@ export function getStartOfWeek(date: Date = new Date()) {
 	const d = new Date(date);
 	const day = d.getDay();
 	const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
-	return new Date(d.setDate(diff));
+	d.setDate(diff)
+	d.setHours(0, 0, 0, 0);
+	return d;
 }
 
 export function getEndOfWeek(date: Date = new Date()) {
 	const d = new Date(date);
 	const day = d.getDay();
 	const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
-	return new Date(d.setDate(diff + 6));
+	d.setHours(23, 59, 59, 999);
+	d.setDate(diff + 6)
+	return d;
 }
 
 export function isSameDate(a: Date, b: Date) {
@@ -76,4 +80,12 @@ export function isWorkHour(hour: number) {
 
 export function isWorkDay(weekDay: number) {
 	return WORK_WEEK_DAYS.includes(weekDay);
+}
+
+export class DateUtils {
+	static isInWeek(date: Date, weekOf: Date = new Date()) {
+		const startOfWeek = getStartOfWeek(weekOf);
+		const endOfWeek = getEndOfWeek(weekOf);
+		return date >= startOfWeek && date <= endOfWeek;
+	}
 }
